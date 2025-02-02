@@ -39,7 +39,6 @@ jobs:
           VERSION=$(echo "$COMMIT_NUM + 200 + 10000" | bc)
           echo "Generated Version: $VERSION"
           echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
-
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
@@ -65,7 +64,6 @@ jobs:
           rustup update stable
           cargo install cargo-ndk
           rustup target install aarch64-linux-android
-
       - name: Cache Rust
         uses: Swatinem/rust-cache@v2
         with:
@@ -81,7 +79,6 @@ jobs:
           sed -i 's/org.gradle.configuration-cache=true//g' gradle.properties
           ./gradlew clean assembleRelease
           echo "BUILD_TOOL_VERSION=$(ls /usr/local/lib/android/sdk/build-tools/ | tail -n 1)" >> $GITHUB_ENV
-
       - name: Sign Release
         env:
           SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
@@ -121,7 +118,6 @@ jobs:
             URL=$(python3 .github/scripts/telegram_url.py -1001910818234)
             curl -v "$URL" -F Release=@${{ steps.sign_app.outputs.signedReleaseFile }}
           fi
-
       - name: Release apk
         env:
           SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
